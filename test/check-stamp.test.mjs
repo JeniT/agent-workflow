@@ -44,6 +44,33 @@ test('the working tree is what a commit of it would hold, ignoring what git igno
   }
 })
 
+test('a tracked file that .gitignore matches stays in the tree, as it does in a commit', () => {
+  const { dir, git, done } = repo()
+  try {
+    writeFileSync(join(dir, 'kept.svg'), 'drawing')
+    git('add', 'kept.svg')
+    git('commit', '-qm', 'tracked before the ignore rule')
+    writeFileSync(join(dir, '.gitignore'), 'ignored.txt\n*.svg\n')
+    git('commit', '-qam', 'ignore svg files')
+    assert.equal(workingTree(dir), treeOf('HEAD', dir))
+  } finally {
+    done()
+  }
+})
+
+test('a file deleted from the working directory is left out', () => {
+  const { dir, git, done } = repo()
+  try {
+    rmSync(join(dir, 'a.txt'))
+    const tree = workingTree(dir)
+    git('add', '-A')
+    git('commit', '-qm', 'delete')
+    assert.equal(treeOf('HEAD', dir), tree)
+  } finally {
+    done()
+  }
+})
+
 test('does not touch the real index', () => {
   const { dir, git, done } = repo()
   try {
