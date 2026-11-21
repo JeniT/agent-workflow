@@ -15,6 +15,7 @@ test('removes the worktree only after the main checkout is brought up to date, a
   assert.deepEqual(steps.at(-1), ['git', 'branch', '-d', 'issue-7'])
   assert.ok(steps[0].includes('--remove-label'))
   assert.ok(at('promote-unblocked') > at('--delete'), 'promotes once the landed issue has closed')
+  assert.deepEqual(steps[at('promote-unblocked')].slice(-3), ['promote-unblocked', '--after', '7'])
 })
 
 test('carries on past a remote branch already gone or a refused fast-forward, and stops at anything else', () => {
