@@ -18,12 +18,13 @@ branch, never local `main`. Run each command bare and on its own, reading its re
    advised, plus what the project's `docs/agents/landing.md` adds. The pre-push hook refuses content the check has not
    passed on, so after a rebase that brought changes in, run the check (bare) with nothing changed after it.
 3. **Only your commits.** `git log origin/main..HEAD` lists only your own. If anything else is there, stop and sort it
-   out. Every unfixed finding is already filed (definition of done, item 5).
-4. **Push.** `git push origin HEAD:main`, with `Closes #<n>` in a commit message of the push. It is a plain
+   out. Every unfixed finding is already filed (definition of done, item 5). One of them says `Closes #<n>`; if none
+   does, `git commit --amend` the last to add it now, before anything is published.
+4. **Push.** `git push origin HEAD:main`. It is a plain
    fast-forward; if it is rejected, go back to step 1. A refusal from the pre-push hook means the check has not passed
    on this content: run it, then push again.
-5. **Finish.** From the main checkout, `pnpm exec aw land <n>`: it removes `in-progress`, deletes the remote branch,
-   promotes the issues this one unblocked, fast-forwards the main checkout and removes your worktree and branch. Name
+5. **Finish.** From the main checkout, `pnpm exec aw land <n>`: it removes `in-progress`, closes the issue if the push did not
+   (and says so), deletes the remote branch, promotes the issues this one unblocked, fast-forwards the main checkout and removes your worktree and branch. Name
    the promoted issues in your final message. Done when it exits 0.
 6. **If it reports the fast-forward was refused,** local `main` holds another session's unpushed commits: in the main
    checkout run `git merge origin/main` (it keeps their commits as they are), resolve conflicts keeping both sides,

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { carriesOn, landSteps, refusal } from '../lib/land.mjs'
+import { carriesOn, closeStep, landSteps, refusal } from '../lib/land.mjs'
 
 test('refuses a branch that is missing or not yet on origin/main', () => {
   assert.match(refusal(7, false, false), /no local branch issue-7/)
@@ -25,4 +25,20 @@ test('carries on past a remote branch already gone or a refused fast-forward, an
       .map((s) => s[1]),
     ['push', 'merge'],
   )
+})
+
+test('closes the issue only when the push left it open, saying which commit landed it', () => {
+  assert.equal(closeStep(7, 'CLOSED', 'abc1234'), undefined)
+  const step = closeStep(7, 'OPEN', 'abc1234')
+  assert.deepEqual(step.slice(0, 4), ['gh', 'issue', 'close', '7'])
+  assert.match(step.at(-1), /abc1234/)
+  assert.match(step.at(-1), /Closes #7/)
+})
+
+test('a close comes before the promotion, which needs the landed issue closed', () => {
+  const close = closeStep(7, 'OPEN', 'abc1234')
+  const steps = landSteps(7, close)
+  assert.ok(steps.indexOf(close) > 0, 'after in-progress is removed')
+  assert.ok(steps.indexOf(close) < steps.findIndex((s) => s.includes('promote-unblocked')))
+  assert.equal(landSteps(7).length, steps.length - 1, 'no close step when GitHub closed it')
 })
