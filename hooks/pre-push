@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+// Refuses a push to `main` of content the project's check has not passed on (lib/check-stamp.mjs). `aw install-hooks`
+// (from the project's `prepare` script) turns it on. AW_SKIP_STAMP=1 lets a push through, for when the owner has said so.
+import { readFileSync } from 'node:fs'
+import { prePush } from '../lib/check-stamp.mjs'
+import { loadConfig } from '../lib/config.mjs'
+
+process.exitCode = prePush(readFileSync(0, 'utf8'), loadConfig())

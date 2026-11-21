@@ -1,0 +1,29 @@
+{
+  "name": "agent-workflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Claim, land and check-stamp commands shared by JeniT's projects",
+  "type": "module",
+  "bin": {
+    "aw": "bin/aw.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "hooks"
+  ],
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "format": "prettier --write .",
+    "check": "prettier --check . && node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "prettier": "^3.10.1"
+  }
+}
