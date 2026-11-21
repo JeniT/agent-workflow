@@ -1,8 +1,45 @@
 # agent-workflow
 
-The way of working shared by wordwright and sumwright, in one place: a package of workflow commands (this README), and
-a Claude Code plugin with the skills and docs that use them (JeniT/agent-workflow#3, not here yet). The plan and its
-reasons are in JeniT/agent-workflow#1.
+The way of working shared by wordwright and sumwright, in one place: a package of workflow commands, and a Claude Code
+plugin with the skills and docs that use them. The plan and its reasons are in JeniT/agent-workflow#1.
+
+## The plugin
+
+| Skill        | Fires when an agent is…                                                             |
+| ------------ | ----------------------------------------------------------------------------------- |
+| `claim`      | picking up an issue (or starting a grill): `aw claim`, then reading what it sits in |
+| `land`       | ready to merge: `aw rebase-overlap`, rebase, push to `main`, `aw land`, guardrails  |
+| `file-issue` | filing a follow-up, observation, review finding or decision, under its epic         |
+| `close-epic` | closing an epic: the slow checks, the whole-diff review, coverage, the retro        |
+
+They share [reference/](reference/): the definition of done, the board (labels, epics, blockers), grills, and this
+machine's quirks. Triage stays with the `triage` skill of mattpocock-skills, which reads the project's own
+`docs/agents/triage.md`.
+
+To enable it in a project, add to its `.claude/settings.json` (committed, so cloud sessions get it too):
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "agent-workflow": { "source": { "source": "github", "repo": "JeniT/agent-workflow" } }
+  },
+  "enabledPlugins": { "agent-workflow@agent-workflow": true }
+}
+```
+
+### What a project keeps for itself
+
+Each skill reads a project file of the same name in `docs/agents/`, when it exists, for what only that project knows.
+Those files hold additions, never a second copy of what the plugin says:
+
+- `claim.md`: checks before claiming (CI on `main`), likely conflict spots.
+- `landing.md`: what to rerun after an overlapping rebase, beyond `aw rebase-overlap`'s advice.
+- `definition-of-done.md`: which docs, help pages and browser tests the project's changes need.
+- `triage.md`: milestones, the project's own labels and what a `ready` issue must state.
+- `closing-an-epic.md`: extra gates (mutation testing, a bundle budget).
+
+The safety lines stay in each project's `AGENTS.md` as well, because a skill loads only when it fires: work in a
+worktree, and publish with `git push origin HEAD:main`, never local `main`.
 
 ## The commands
 

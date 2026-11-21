@@ -1,0 +1,8 @@
+{
+  "name": "agent-workflow",
+  "version": "0.1.0",
+  "description": "Claiming, landing, filing issues and closing epics, shared by JeniT's projects. Uses the aw commands from this repo's package.",
+  "author": { "name": "Jeni Tennison" },
+  "repository": "https://github.com/JeniT/agent-workflow",
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "agent-workflow",
+  "owner": { "name": "Jeni Tennison" },
+  "metadata": { "description": "The agent workflow shared by JeniT's projects." },
+  "plugins": [
+    {
+      "name": "agent-workflow",
+      "source": "./",
+      "description": "Claiming, landing, filing issues and closing epics, shared by JeniT's projects.",
+      "version": "0.1.0"
+    }
+  ]
+}
